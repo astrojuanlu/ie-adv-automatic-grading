@@ -68,7 +68,10 @@ def check_syntax(contents_dir):
 
 
 def check_pep8(contents_dir):
-    _run_command(["pycodestyle", "src", "tests", "setup.py"], cwd=str(contents_dir))
+    _run_command(
+        ["pycodestyle", "--max-line-length", "90", "src", "tests", "setup.py"],
+        cwd=str(contents_dir),
+    )
 
 
 def check_tests(contents_dir):
