@@ -113,6 +113,12 @@ if __name__ == "__main__":
     )
     logger.addHandler(handler)
 
-    logger.setLevel(logging.DEBUG)
+    if len(sys.argv) == 1:
+        logger.setLevel(logging.INFO)
+    elif sys.argv[1] in ("-v", "--verbose"):
+        logger.setLevel(logging.DEBUG)
+    else:
+        print(f"Invalid arguments {sys.argv[1:]}")
+        sys.exit(1)
 
     main()
