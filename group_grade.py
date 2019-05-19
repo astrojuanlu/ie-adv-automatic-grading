@@ -5,10 +5,17 @@ import sys
 import zipfile
 from glob import glob
 from pathlib import Path
+import xml.etree.ElementTree as ET
 
 import colorlog
 
 logger = logging.getLogger(__name__)
+
+MINIMUM_COVERAGE = 0.9
+
+
+class FailedCheckError(Exception):
+    pass
 
 
 def grade_team(zip_path):
@@ -18,6 +25,8 @@ def grade_team(zip_path):
         (check_import, "import"),
         (check_syntax, "syntax"),
         (check_pep8, "pep8"),
+        (check_tests, "tests"),
+        (check_coverage, "coverage"),
     ]:
         try:
             check_func(contents_dir)
@@ -60,6 +69,20 @@ def check_syntax(contents_dir):
 
 def check_pep8(contents_dir):
     _run_command(["pycodestyle", "src", "tests", "setup.py"], cwd=str(contents_dir))
+
+
+def check_tests(contents_dir):
+    _run_command(["pytest"], cwd=str(contents_dir))
+
+
+def check_coverage(contents_dir):
+    _run_command(
+        ["pytest", "--cov-report", "xml", "--cov", "ie_pandas"], cwd=str(contents_dir)
+    )
+    tree = ET.parse(contents_dir / "coverage.xml")
+    cov = float(tree.getroot().attrib["line-rate"])
+    if cov < MINIMUM_COVERAGE:
+        raise FailedCheckError(f"Test coverage is {cov}, less than {MINIMUM_COVERAGE}")
 
 
 def _run_command(command, *args, **kwargs):
