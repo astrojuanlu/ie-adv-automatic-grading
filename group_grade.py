@@ -87,10 +87,11 @@ def check_coverage(contents_dir):
 
 def _run_command(command, *args, **kwargs):
     res = subprocess.run(
-        command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, *args, **kwargs
+        command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, *args, **kwargs
     )
     logger.debug(res.stdout.decode())
     if res.returncode != 0:
+        logger.error(res.stderr.decode())
         raise subprocess.CalledProcessError(res.returncode, command)
 
     return res.stdout.decode()
