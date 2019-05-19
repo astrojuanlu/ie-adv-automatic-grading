@@ -2,10 +2,10 @@ import logging
 import os
 import subprocess
 import sys
+import xml.etree.ElementTree as ET
 import zipfile
 from glob import glob
 from pathlib import Path
-import xml.etree.ElementTree as ET
 
 import colorlog
 
@@ -27,6 +27,7 @@ def grade_team(zip_path):
         (check_pep8, "pep8"),
         (check_tests, "tests"),
         (check_coverage, "coverage"),
+        (check_custom_tests, "custom tests"),
     ]:
         try:
             check_func(contents_dir)
@@ -92,6 +93,10 @@ def check_coverage(contents_dir):
     cov = float(tree.getroot().attrib["line-rate"])
     if cov < MINIMUM_COVERAGE:
         raise FailedCheckError(f"Test coverage is {cov}, less than {MINIMUM_COVERAGE}")
+
+
+def check_custom_tests(_):
+    _run_command(["pytest", "test_custom.py"])
 
 
 def _run_command(command, *args, **kwargs):
