@@ -16,7 +16,7 @@ def grade_team(zip_path):
     library_name = install_lib(contents_dir)
     for check_func, check_name in [(check_import, "check_import")]:
         try:
-            check_func()
+            check_func(contents_dir)
         except Exception as e:
             logger.warning(f"'{check_name}' failed")
         else:
@@ -46,7 +46,7 @@ def uninstall_lib(library_name):
     _run_command(["pip", "uninstall", library_name, "--yes"])
 
 
-def check_import():
+def check_import(_):
     _run_command([sys.executable, "-c", "from ie_pandas import DataFrame"])
 
 
