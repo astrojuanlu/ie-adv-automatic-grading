@@ -18,9 +18,9 @@ def grade_team(zip_path):
         try:
             check_func(contents_dir)
         except Exception as e:
-            logger.warning(f"'{check_name}' failed")
+            logger.warning(f"Check '{check_name}' failed: {e}")
         else:
-            logger.info(f"'{check_name}' successful")
+            logger.info(f"Check '{check_name}' succeeded")
 
     uninstall_lib(library_name)
 
