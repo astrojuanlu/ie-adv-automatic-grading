@@ -79,8 +79,14 @@ def check_tests(contents_dir):
 
 
 def check_coverage(contents_dir):
+    # Instead of just doing
+    # package_name = "ie_pandas"
+    # let's try to find the package name
+    # assuming there is only one directory in `src`
+    package_name = list((contents_dir / "src").iterdir())[0].name
+
     _run_command(
-        ["pytest", "--cov-report", "xml", "--cov", "ie_pandas"], cwd=str(contents_dir)
+        ["pytest", "--cov-report", "xml", "--cov", package_name], cwd=str(contents_dir)
     )
     tree = ET.parse(contents_dir / "coverage.xml")
     cov = float(tree.getroot().attrib["line-rate"])
