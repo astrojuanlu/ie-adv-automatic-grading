@@ -14,7 +14,11 @@ logger = logging.getLogger(__name__)
 def grade_team(zip_path):
     contents_dir = extract_zip(zip_path)
     library_name = install_lib(contents_dir)
-    for check_func, check_name in [(check_import, "check_import")]:
+    for check_func, check_name in [
+        (check_import, "import"),
+        (check_syntax, "syntax"),
+        (check_pep8, "pep8"),
+    ]:
         try:
             check_func(contents_dir)
         except Exception as e:
@@ -48,6 +52,14 @@ def uninstall_lib(library_name):
 
 def check_import(_):
     _run_command([sys.executable, "-c", "from ie_pandas import DataFrame"])
+
+
+def check_syntax(contents_dir):
+    _run_command([sys.executable, "-m", "compileall", str(contents_dir)])
+
+
+def check_pep8(contents_dir):
+    _run_command(["pycodestyle", "src", "tests", "setup.py"], cwd=str(contents_dir))
 
 
 def _run_command(command, *args, **kwargs):
