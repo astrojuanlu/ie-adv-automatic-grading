@@ -76,10 +76,6 @@ def check_pep8(contents_dir):
 
 
 def check_tests(contents_dir):
-    _run_command(["pytest"], cwd=str(contents_dir))
-
-
-def check_coverage(contents_dir):
     # Instead of just doing
     # package_name = "ie_pandas"
     # let's try to find the package name
@@ -89,6 +85,9 @@ def check_coverage(contents_dir):
     _run_command(
         ["pytest", "--cov-report", "xml", "--cov", package_name], cwd=str(contents_dir)
     )
+
+
+def check_coverage(contents_dir):
     tree = ET.parse(contents_dir / "coverage.xml")
     cov = float(tree.getroot().attrib["line-rate"])
     if cov < MINIMUM_COVERAGE:
