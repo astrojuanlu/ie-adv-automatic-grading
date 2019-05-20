@@ -50,9 +50,9 @@ def test_edit_col(int_df):
 
 
 def test_edit_col_alt(int_df):
-    new_row = np.array([11, 12, 13])
+    new_row = [11, 12, 13]
 
-    int_df["a"][:] = new_row
+    int_df["a"] = new_row
 
     assert (int_df["a"] == new_row).all()
 
